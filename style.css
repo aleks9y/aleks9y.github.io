@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+}
+
+
+.container {
+    margin: 0px 80px;
+    background-color: #fff;
+    border-radius: 36px;
+    margin-top: 80px;
+    /*удалить*/height: 1800px;
+}
+
+.header {
+    background-image: url(bg.png);
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header-line{
+    margin:0px  80px;
+
+    padding-top: 65px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    font-family: "Inter", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.mid-wrds{
+    display: flex;
+    align-items: center;
+}
+
+.mid-wrds a{
+    text-decoration: none;
+    color: black;
+    margin-right: 60px;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+
+}
+
+
+.mid-wrds a:hover{
+    color: blue;
+}
+
+.mid-wrds a:last-child{
+    margin-right: 0;
+}
+
+.line-btn{
+    display: flex;
+    align-items: center;
+    padding: 11px 27px;
+    border-radius: 52px;
+    background: -webkit-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+    background: -moz-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+    background: linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+}
+
+.line-btn a{
+    color: #fff;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    
+
+}
+
+.line-btn a:hover{
+    color: rgb(214, 168, 214);
+
+}
+
+.headerbg{
+    margin: 0px 80px;
+    display: flex;
+    justify-content: center;
+    margin-top: 43px;
+}
+
+.header-down img{
+    width: 1200px;
+    height: 500px;
+
+}
+
+.header-down h1{
+    text-align: center;
+    margin-top: -370px;
+    color: #fff;
+    font-size: 54px;
+    font-family: "Inter", sans-serif;
+
+}
+
+.header-down h2{
+    color:rgba(255, 255, 255, 0.6);
+
+    font-size: 20px;
+    text-align: center;
+    font-weight: 100;
+}
+
+.header-btn2{
+    text-align: center;
+    margin-top: 60px;
+
+}
+
+
+
+.header-btn2 a{
+    text-decoration: none;
+    background: -webkit-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+    background: -moz-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+    background: linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
+    padding: 20px 80px;
+    border-radius: 62px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+
+}
+
+.header-btn2 a:hover{
+    color: rgb(214, 168, 214);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
