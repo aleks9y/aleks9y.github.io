@@ -1,158 +1,54 @@
-body {
-    margin: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5ff;
+            margin: 0;
+            padding: 20px;
+        }
 
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-.container {
-    margin: 0px 80px;
-    background-color: #fff;
-    border-radius: 36px;
-    margin-top: 80px;
-    /*удалить*/height: 1800px;
-}
+        h1 {
+            text-align: center;
+            color: #0088cc;
+        }
 
-.header {
-    background-image: url(bg.png);
-    height: 100vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-.header-line{
-    margin:0px  80px;
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #0088cc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    padding-top: 65px;
-    display: flex;
-    justify-content: space-between;
-}
+        input[type="submit"] {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
-.logo{
-    display: flex;
-    align-items: center;
-    font-family: "Inter", sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-}
-
-.mid-wrds{
-    display: flex;
-    align-items: center;
-}
-
-.mid-wrds a{
-    text-decoration: none;
-    color: black;
-    margin-right: 60px;
-    font-size: 18px;
-    font-family: "Inter", sans-serif;
-
-}
-
-
-.mid-wrds a:hover{
-    color: blue;
-}
-
-.mid-wrds a:last-child{
-    margin-right: 0;
-}
-
-.line-btn{
-    display: flex;
-    align-items: center;
-    padding: 11px 27px;
-    border-radius: 52px;
-    background: -webkit-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-    background: -moz-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-    background: linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-}
-
-.line-btn a{
-    color: #fff;
-
-    text-decoration: none;
-    font-size: 14px;
-    font-family: "Inter", sans-serif;
-    
-
-}
-
-.line-btn a:hover{
-    color: rgb(214, 168, 214);
-
-}
-
-.headerbg{
-    margin: 0px 80px;
-    display: flex;
-    justify-content: center;
-    margin-top: 43px;
-}
-
-.header-down img{
-    width: 1200px;
-    height: 500px;
-
-}
-
-.header-down h1{
-    text-align: center;
-    margin-top: -370px;
-    color: #fff;
-    font-size: 54px;
-    font-family: "Inter", sans-serif;
-
-}
-
-.header-down h2{
-    color:rgba(255, 255, 255, 0.6);
-
-    font-size: 20px;
-    text-align: center;
-    font-weight: 100;
-}
-
-.header-btn2{
-    text-align: center;
-    margin-top: 60px;
-
-}
-
-
-
-.header-btn2 a{
-    text-decoration: none;
-    background: -webkit-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-    background: -moz-linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-    background: linear-gradient(45deg, rgb(214, 134, 215), rgb(24, 36, 196));
-    padding: 20px 80px;
-    border-radius: 62px;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 600;
-    font-family: "Inter", sans-serif;
-
-}
-
-.header-btn2 a:hover{
-    color: rgb(214, 168, 214);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        input[type="submit"]:hover {
+            background-color: #0077b3;
+        }
