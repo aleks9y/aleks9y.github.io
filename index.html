@@ -99,15 +99,22 @@
             return;
         }
 
+        // Проверяем размер файла
+        if (file.size > 10 * 1024 * 1024) { // Пример: 10 MB
+            alert("Размер файла слишком большой!");
+            return;
+        }
+
         try {
             let base64File = await fileToBase64(file);
 
             let data = {
                 fio: fio,
                 desc: desc,
-                file: base64File  // Файл в формате Base64
+                file: base64File // Файл в формате Base64
             };
 
+            console.log("Данные отправлены:", data); // Для отладки
             tg.sendData(JSON.stringify(data));
             tg.close();
         } catch (error) {
@@ -122,10 +129,11 @@
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
             reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // Читаем файл как Base64
         });
     }
 </script>
+
 
 </body>
 </html>
