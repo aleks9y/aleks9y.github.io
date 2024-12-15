@@ -86,7 +86,6 @@
 
     document.getElementById("btn").addEventListener("click", () => {
         let fio = document.getElementById("fullname").value;
-        let desc = document.getElementById("desc").value; // Добавлено получение описания
         let fileInput = document.getElementById("file");
 
         if (fileInput.files.length === 0) {
@@ -100,27 +99,13 @@
         reader.onload = function(event) {
             let base64String = event.target.result.split(',')[1]; // Получаем только часть с данными
 
-            // Проверка на наличие данных
-            if (!base64String) {
-                alert('Ошибка при чтении файла.');
-                return;
-            }
-
             let data = {
                 fio: fio,
-                desc: desc, 
                 fileData: base64String // Добавляем закодированные данные файла
             };
 
-            // Отладочный вывод
-            console.log("Отправляемые данные:", JSON.stringify(data));
-
             tg.sendData(JSON.stringify(data));
             tg.close();
-        };
-
-        reader.onerror = function() {
-            alert('Ошибка при чтении файла.');
         };
 
         reader.readAsDataURL(file); // Читаем файл как Data URL
