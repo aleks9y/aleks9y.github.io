@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Регистрация</h1>
+    <form enctype="multipart/form-data">
+        <label for="first-name">Имя:</label>
+        <input type="text" id="first-name" name="first-name" required>
+
+        <label for="last-name">Фамилия:</label>
+        <input type="text" id="last-name" name="last-name" required>
+
+        <label for="file">Загрузить файл:</label>
+        <input type="file" id="file" name="file">
+
+        <button id="btn">Оформить</button>
+
+    </form>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    let send = document.getElementById("send");
+
+    send.addEventListener("click", () => {
+        tg.close();
+
+    })
+
+
+</script>
+
+
+
+</body>
+</html>
