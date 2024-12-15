@@ -72,7 +72,7 @@
         <label for="file">Загрузить файл:</label>
         <input type="file" id="file" name="file" accept=".txt,.pdf,.doc,.docx">
 
-        <button type="button" id="btn">Оформить</button>
+        <button type="submit">Оформить</button>
     </form>
 </div>
 
@@ -81,7 +81,9 @@
 <script>
     let tg = window.Telegram.WebApp;
 
-    document.getElementById("btn").addEventListener("click", () => {
+    document.getElementById("registration-form").addEventListener("submit", (event) => {
+        event.preventDefault(); // Предотвращаем стандартное поведение формы
+
         let fio = document.getElementById("fullname").value;
         let desc = document.getElementById("desc").value;
         let fileInput = document.getElementById("file");
