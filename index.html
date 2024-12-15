@@ -64,11 +64,13 @@
 <div class="container">
     <h1>Регистрация</h1>
     <form enctype="multipart/form-data">
-        <label for="first-name">Имя:</label>
-        <input type="text" id="first-name" name="first-name" required>
+        <label for="fullname">ФИО:</label>
+        <input type="text" id="fullname" name="fullname" required>
 
-        <label for="last-name">Фамилия:</label>
-        <input type="text" id="last-name" name="last-name" required>
+        <label for="desc">Напишите о себе:</label>
+        <input type="text" id="desc" name="desc" required>
+
+
 
         <label for="file">Загрузить файл:</label>
         <input type="file" id="file" name="file">
@@ -86,6 +88,16 @@
     tg.expand()
 
     send.addEventListener("click", () => {
+        let fio = document.getElementById("fullname").value
+
+        let data = {
+            fio: fio
+        }
+
+
+
+        tg.sendData(JSON.stringify(data))
+
         tg.close();
 
     })
