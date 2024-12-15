@@ -6,63 +6,64 @@
     <title>Регистрация</title>
 </head>
 <body>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #e9f5ff;
-        margin: 0;
-        padding: 20px;
-    }
+<style>        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5ff;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .container {
-        max-width: 600px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-        text-align: center;
-        color: #0088cc;
-    }
+        h1 {
+            text-align: center;
+            color: #0088cc;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 8px;
-        color: #555;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-    input[type="text"],
-    input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #0088cc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #0088cc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    button {
-        background-color: #0088cc;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
+        input[type="submit"] {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
-    button:hover {
-        background-color: #0077b3;
-    }
-</style>
+        input[type="submit"]:hover {
+            background-color: #0077b3;
+        } </style>
 
 <div class="container">
     <h1>Регистрация</h1>
-    <form id="registration-form" enctype="multipart/form-data">
+    <form enctype="multipart/form-data">
         <label for="fullname">ФИО:</label>
         <input type="text" id="fullname" name="fullname" required>
 
@@ -70,56 +71,45 @@
         <input type="text" id="desc" name="desc" required>
 
         <label for="file">Загрузить файл:</label>
-        <input type="file" id="file" name="file" accept=".txt,.pdf,.doc,.docx">
+        <input type="file" id="file" name="file">
 
-        <button type="submit">Оформить</button>
+        <button id="btn" type="button">Оформить</button>
     </form>
 </div>
 
 <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-
 <script>
     let tg = window.Telegram.WebApp;
+    let send = document.getElementById("btn");
+    tg.expand();
 
-    document.getElementById("registration-form").addEventListener("submit", (event) => {
-        event.preventDefault(); // Предотвращаем стандартное поведение формы
-
+    send.addEventListener("click", async () => {
         let fio = document.getElementById("fullname").value;
         let desc = document.getElementById("desc").value;
         let fileInput = document.getElementById("file");
+        let file = fileInput.files[0];
 
-        if (fileInput.files.length === 0) {
-            alert('Пожалуйста, выберите файл.');
-            return;
+        let fileBase64 = null;
+        if (file) {
+            // Прочитать файл как Base64
+            fileBase64 = await new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(",")[1]); // Убираем префикс Base64
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
-        let file = fileInput.files[0];
-        let reader = new FileReader();
-
-        reader.onload = function(event) {
-            let base64String = event.target.result.split(',')[1]; // Получаем только часть с данными
-
-            // Создаем объект данных для отправки
-            let data = {
-                fio: fio,
-                desc: desc,
-                fileData: base64String // Закодированные данные файла
-            };
-
-            // Отправляем данные
-            tg.sendData(JSON.stringify(data));
-            tg.close();
+        let data = {
+            fio: fio,
+            desc: desc,
+            file: fileBase64, // Кодированное содержимое файла
+            fileName: file ? file.name : null, // Имя файла
         };
 
-        reader.onerror = function() {
-            alert('Ошибка при чтении файла.');
-        };
-
-        reader.readAsDataURL(file); // Читаем файл как Data URL
+        tg.sendData(JSON.stringify(data));
+        tg.close();
     });
-
-    tg.expand();
 </script>
-
 </body>
 </html>
