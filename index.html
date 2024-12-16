@@ -1,122 +1,122 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация</title>
-</head>
-<body>
-<style>        body {
+    <title>Save Data Locally</title>
+    <style>
+        body {
             font-family: Arial, sans-serif;
-            background-color: #e9f5ff;
+            background-color: #ffffff;
+            color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #eaeaea;
         }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
+        h1 {
+            color: #0088cc; /* Telegram blue */
+        }
+        form {
+            background: #ffffff;
+            border: 1px solid #dcdcdc;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        h1 {
-            text-align: center;
-            color: #0088cc;
-        }
-
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #555;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
         }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        textarea,
-        input[type="file"] {
+        input, textarea {
             width: 100%;
             padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #0088cc;
+            margin-bottom: 15px;
+            border: 1px solid #dcdcdc;
             border-radius: 4px;
-            box-sizing: border-box;
+            font-size: 14px;
         }
-
-        input[type="submit"] {
+        button {
             background-color: #0088cc;
-            color: white;
+            color: #ffffff;
             border: none;
             padding: 10px 15px;
             border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
         }
+        button:hover {
+            background-color: #006699;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Data Form</h1>
+    <form id="data-form">
+        <label for="fio">Full Name (ФИО):</label>
+        <input type="text" id="fio" placeholder="Enter your full name" required>
 
-        input[type="submit"]:hover {
-            background-color: #0077b3;
-        } </style>
+        <label for="desc">About Yourself:</label>
+        <textarea id="desc" rows="4" placeholder="Write a short description about yourself" required></textarea>
 
-<div class="container">
-    <h1>Регистрация</h1>
-    <form enctype="multipart/form-data">
-        <label for="fullname">ФИО:</label>
-        <input type="text" id="fullname" name="fullname" required>
+        <label for="file">Upload a File (photo, .txt, Excel):</label>
+        <input type="file" id="file" accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
 
-        <label for="desc">Напишите о себе:</label>
-        <input type="text" id="desc" name="desc" required>
-
-        <label for="file">Загрузить файл:</label>
-        <input type="file" id="file" name="file">
-
-        <button id="btn" type="button">Оформить</button>
-
+        <button type="button" id="save-button">Save Data</button>
     </form>
-</div>
 
-<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <script>
+        document.getElementById('save-button').addEventListener('click', async () => {
+            const fio = document.getElementById('fio').value;
+            const desc = document.getElementById('desc').value;
+            const fileInput = document.getElementById('file');
 
-<script>
-    let tg = window.Telegram.WebApp;
-    let send = document.getElementById("btn");
-    tg.expand();
+            if (!fio || !desc) {
+                alert('Please fill out all fields.');
+                return;
+            }
 
-    send.addEventListener("click", async () => {
-        let fio = document.getElementById("fullname").value;
-        let desc = document.getElementById("desc").value;
-        let fileInput = document.getElementById("file");
+            const file = fileInput.files[0];
+            let fileContent = null;
 
-        let data = {
-            fio: fio,
-            desc: desc
-        };
+            if (file) {
+                fileContent = await readFileAsBase64(file);
+            }
 
-        if (fileInput.files.length > 0) {
-            let file = fileInput.files[0];
+            const data = {
+                fio: fio,
+                desc: desc,
+                file: file ? {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    content: fileContent
+                } : null
+            };
 
-            // Чтение файла в формате Base64
-            let base64File = await toBase64(file);
-            data.file = base64File; // Добавляем кодированный файл в объект data
-        }
+            tg.sendData(JSON.stringify(data));
 
-        tg.sendData(JSON.stringify(data));
-        tg.close();
-    });
+            // Optionally log the data to console for debugging
+            console.log(data);
 
-    // Функция для преобразования файла в Base64
-    function toBase64(file) {
-        return new Promise((resolve, reject) => {
-            let reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(",")[1]); // Убираем префикс "data:*/*;base64,"
-            reader.onerror = error => reject(error);
-            reader.readAsDataURL(file);
+            alert('Data has been saved locally. Check your console for details.');
         });
-    }
-</script>
 
+        // Helper function to read a file as Base64
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        }
+    </script>
 </body>
 </html>
