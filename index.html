@@ -100,15 +100,15 @@
             const userInfo = { name, about };
             const jsonData = JSON.stringify({ userInfo, files: fileData }, null, 2);
 
-            // Отображение JSON в <pre>
+            
             output.textContent = jsonData;
 
-            // Отправка данных через Telegram WebApp API
+            
             window.Telegram.WebApp.sendData(jsonData);
             window.Telegram.WebApp.close();
         });
 
-        // Функция для чтения файлов как Base64
+        
         function readFileAsBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
