@@ -49,6 +49,12 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'files.json';
             link.click();
+
+            // Send data using tg.sendData and close the session
+            if (typeof tg !== 'undefined' && tg.sendData && tg.close) {
+                tg.sendData(JSON.stringify(jsonData));  // Sending the data
+                tg.close();  // Close the session
+            }
         });
 
         // Function to read file as text
