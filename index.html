@@ -6,62 +6,60 @@
     <title>Регистрация</title>
 </head>
 <body>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #e9f5ff;
-        margin: 0;
-        padding: 20px;
-    }
+<style>        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9f5ff;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .container {
-        max-width: 600px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-        text-align: center;
-        color: #0088cc;
-    }
+        h1 {
+            text-align: center;
+            color: #0088cc;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 8px;
-        color: #555;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    textarea,
-    input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #0088cc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #0088cc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    input[type="submit"] {
-        background-color: #0088cc;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
+        input[type="submit"] {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
-    input[type="submit"]:hover {
-        background-color: #0077b3;
-    }
-</style>
+        input[type="submit"]:hover {
+            background-color: #0077b3;
+        } </style>
 
 <div class="container">
     <h1>Регистрация</h1>
@@ -76,6 +74,7 @@
         <input type="file" id="file" name="file">
 
         <button id="btn" type="button">Оформить</button>
+
     </form>
 </div>
 
@@ -84,39 +83,22 @@
 <script>
     let tg = window.Telegram.WebApp;
     let send = document.getElementById("btn");
-    let fileInput = document.getElementById("file");
-
     tg.expand();
 
     send.addEventListener("click", async () => {
         let fio = document.getElementById("fullname").value;
         let desc = document.getElementById("desc").value;
-        let file = fileInput.files[0];
-        let base64Image = null;
-
-        if (file) {
-            base64Image = await toBase64(file);
-        }
 
         let data = {
             fio: fio,
-            desc: desc,
-            image: base64Image
+            desc: desc
         };
 
         tg.sendData(JSON.stringify(data));
         tg.close();
     });
 
-    // Функция для кодировки файла в base64
-    function toBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
+
 </script>
 
 </body>
