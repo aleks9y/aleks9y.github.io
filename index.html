@@ -72,51 +72,50 @@
     </form>
 
     <script>
-        document.getElementById('save-button').addEventListener('click', async () => {
-            const fio = document.getElementById('fio').value;
-            const desc = document.getElementById('desc').value;
-            const fileInput = document.getElementById('file');
+    document.getElementById('save-button').addEventListener('click', async () => {
+        const fio = document.getElementById('fio').value;
+        const desc = document.getElementById('desc').value;
+        const fileInput = document.getElementById('file');
 
-            if (!fio || !desc) {
-                alert('Please fill out all fields.');
-                return;
-            }
-
-            const file = fileInput.files[0];
-            let fileContent = null;
-
-            if (file) {
-                fileContent = await readFileAsBase64(file);
-            }
-
-            const data = {
-                fio: fio,
-                desc: desc,
-                file: file ? {
-                    name: file.name,
-                    type: file.type,
-                    size: file.size,
-                    content: fileContent
-                } : null
-            };
-
-            tg.sendData(JSON.stringify(data));
-
-            // Optionally log the data to console for debugging
-            console.log(data);
-
-            alert('Data has been saved locally. Check your console for details.');
-        });
-
-        // Helper function to read a file as Base64
-        function readFileAsBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = (error) => reject(error);
-            });
+        if (!fio || !desc) {
+            alert('Please fill out all fields.');
+            return;
         }
-    </script>
+
+        const file = fileInput.files[0];
+        let fileContent = null;
+
+        if (file) {
+            fileContent = await readFileAsBase64(file);
+        }
+
+        const data = {
+            fio: fio,
+            desc: desc,
+            file: file ? {
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                content: fileContent
+            } : null
+        };
+
+        // Отправка данных через Telegram Web App
+        tg.sendData(JSON.stringify(data));
+
+        alert('Данные отправлены в Telegram.');
+    });
+
+    // Helper function to read a file as Base64
+    function readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    }
+</script>
+
 </body>
 </html>
