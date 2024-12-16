@@ -1,62 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniApp</title>
+    <title>Регистрация</title>
 </head>
 <body>
-    <h1>MiniApp Form</h1>
-    <form id="miniapp-form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter your name" required>
-        <br><br>
+<style>        
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #e9f5ff;
+        margin: 0;
+        padding: 20px;
+    }
 
-        <label for="about">About Yourself:</label>
-        <textarea id="about" name="about" placeholder="Write something about yourself" required></textarea>
-        <br><br>
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        <label for="files">Upload Files:</label>
-        <input type="file" id="files" name="files" multiple>
-        <br><br>
+    h1 {
+        text-align: center;
+        color: #0088cc;
+    }
 
-        <button type="button" id="submit-button">Submit</button>
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #0088cc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #0088cc;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #0077b3;
+    }
+</style>
+
+<div class="container">
+    <h1>Регистрация</h1>
+    <form enctype="multipart/form-data">
+        <label for="fullname">ФИО:</label>
+        <input type="text" id="fullname" name="fullname" required>
+
+        <label for="desc">Напишите о себе:</label>
+        <textarea id="desc" name="desc" required></textarea>
+
+        <label for="file">Загрузить файл:</label>
+        <input type="file" id="file" name="file" multiple>
+
+        <button id="btn" type="button">Оформить</button>
     </form>
+</div>
 
-    <script>
-        // Получаем ссылку на кнопку и форму
-        const submitButton = document.getElementById('submit-button');
-        const form = document.getElementById('miniapp-form');
+<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
 
-        submitButton.addEventListener('click', () => {
-            // Собираем данные из формы
-            const name = document.getElementById('name').value;
-            const about = document.getElementById('about').value;
-            const files = document.getElementById('files').files;
+<script>
+    let tg = window.Telegram.WebApp;
+    let send = document.getElementById("btn");
+    tg.expand();
 
-            // Формируем JSON-объект
-            const formData = {
-                name: name,
-                about: about,
-                files: []
-            };
+    send.addEventListener("click", async () => {
+        let fio = document.getElementById("fullname").value;
+        let desc = document.getElementById("desc").value;
+        let files = document.getElementById("file").files;
 
-            // Добавляем имена файлов в JSON
-            for (const file of files) {
-                formData.files.push(file.name);
-            }
+        let data = {
+            fio: fio,
+            desc: desc,
+            files: []
+        };
 
-            // Проверяем, что Telegram WebApp доступен
-            if (window.Telegram.WebApp) {
-                // Отправляем данные в Telegram
-                Telegram.WebApp.sendData(JSON.stringify(formData));
-            } else {
-                alert("Telegram WebApp не инициализирован!");
-            }
+        // Обработка файлов
+        for (let file of files) {
+            let base64File = await convertFileToBase64(file);
+            data.files.push({
+                name: file.name,
+                type: file.type,
+                content: base64File
+            });
+        }
+
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    });
+
+    // Функция для конвертации файла в Base64
+    function convertFileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]); // Убираем префикс "data:<type>;base64,"
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(file);
         });
+    }
+</script>
 
-        // Запускаем WebApp при загрузке
-        Telegram.WebApp.ready();
-    </script>
 </body>
 </html>
