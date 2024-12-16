@@ -75,55 +75,51 @@
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
     <script>
         document.getElementById('upload-button').addEventListener('click', async () => {
-    const nameInput = document.getElementById('name');
-    const aboutInput = document.getElementById('about');
-    const fileInput = document.getElementById('files');
-    const output = document.getElementById('output');
+            const nameInput = document.getElementById('name');
+            const aboutInput = document.getElementById('about');
+            const fileInput = document.getElementById('files');
+            const output = document.getElementById('output');
 
-    const name = nameInput.value.trim();
-    const about = aboutInput.value.trim();
-    const files = fileInput.files;
+            const name = nameInput.value.trim();
+            const about = aboutInput.value.trim();
+            const files = fileInput.files;
 
-    if (!name || !about) {
-        alert('Пожалуйста, заполните все поля.');
-        return;
-    }
+            if (!name || !about) {
+                alert('Пожалуйста, заполните все поля.');
+                return;
+            }
 
-    const fileData = [];
-    for (const file of files) {
-        fileData.push({
-            name: file.name,
-            type: file.type,
-            size: file.size
-        });
-    }
+            const fileData = [];
+            for (const file of files) {
+                const fileContent = await readFileAsBase64(file);
+                fileData.push({
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    content: fileContent
+                });
+            }
 
-    const userInfo = { name, about };
-    const jsonData = JSON.stringify({ userInfo, files: fileData }, null, 2);
+            const userInfo = { name, about };
+            const jsonData = JSON.stringify({ userInfo, files: fileData }, null, 2);
 
-    // Отображение JSON в <pre>
-    output.textContent = jsonData;
+            // Отображение JSON в <pre>
+            output.textContent = jsonData;
 
-    // Отправка данных на сервер
-    try {
-        const response = await fetch('http://127.0.0.1:5000/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: jsonData,
+            // Отправка данных через Telegram WebApp API
+            window.Telegram.WebApp.sendData(jsonData);
+            window.Telegram.WebApp.close();
         });
 
-        const responseData = await response.json();
-        if (response.status === 200) {
-            alert('Данные успешно отправлены!');
-        } else {
-            alert('Ошибка при отправке данных');
+        // Функция для чтения файлов как Base64
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
         }
-    } catch (error) {
-        alert('Ошибка соединения с сервером');
-    }
-});
     </script>
 </body>
 </html>
