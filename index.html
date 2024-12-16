@@ -93,7 +93,7 @@
             for (const file of files) {
                 const fileContent = await readFileAsBase64(file);
                 fileData.push({
-                    content: fileContent
+                    name: file.name,
                 });
             }
 
