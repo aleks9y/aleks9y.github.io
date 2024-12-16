@@ -3,124 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка файлов в JSON</title>
+    <title>Загрузка файлов и данных</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #eaf6fb;
-            color: #084c61;
+            background-color: #e6f7ff;
+            color: #004d66;
             margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            color: #05668d;
-            margin-top: 20px;
-        }
-
-        form {
-            width: 80%;
-            max-width: 600px;
-            margin: 20px auto;
-            background: #ffffff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
+        h1 {
+            color: #006080;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #99d6ff;
+            border-radius: 10px;
+            background-color: #f0faff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
         label {
-            font-weight: bold;
             display: block;
             margin-bottom: 10px;
-            color: #05668d;
+            font-weight: bold;
         }
-
-        input, textarea {
+        input, textarea, button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
-            border: 1px solid #b9d8e6;
+            border: 1px solid #99d6ff;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 14px;
         }
-
-        input:focus, textarea:focus {
-            border-color: #05668d;
-            outline: none;
-        }
-
         button {
-            background-color: #05668d;
+            background-color: #008fb3;
             color: white;
-            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
-
         button:hover {
-            background-color: #084c61;
+            background-color: #006080;
         }
-
         pre {
-            width: 80%;
-            max-width: 600px;
-            margin: 20px auto;
-            background: #f0faff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
+            white-space: pre-wrap;
+            background-color: #f0faff;
+            border: 1px solid #99d6ff;
+            padding: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Загрузка файлов и данных в JSON</h1>
-    <form id="file-form">
-        <label for="name">Ваше имя:</label>
-        <input type="text" id="name" name="name" placeholder="Введите ваше имя">
-
+    <h1>Отправка данных в JSON</h1>
+    <form id="data-form">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" placeholder="Введите ваше имя" required>
+        
         <label for="about">О себе:</label>
-        <textarea id="about" name="about" placeholder="Расскажите немного о себе"></textarea>
-
-        <label for="files">Выберите файлы (изображения, текстовые файлы или Excel):</label>
+        <textarea id="about" name="about" placeholder="Напишите немного о себе" rows="4" required></textarea>
+        
+        <label for="files">Выберите файлы (изображения, текст, или Excel):</label>
         <input type="file" id="files" name="files" multiple accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
-
-        <button type="button" id="upload-button">Загрузить и сохранить</button>
+        
+        <button type="button" id="upload-button">Отправитьб</button>
     </form>
 
     <pre id="output"></pre>
 
     <script>
         document.getElementById('upload-button').addEventListener('click', async () => {
+            const nameInput = document.getElementById('name');
+            const aboutInput = document.getElementById('about');
             const fileInput = document.getElementById('files');
             const output = document.getElementById('output');
+
+            const name = nameInput.value.trim();
+            const about = aboutInput.value.trim();
             const files = fileInput.files;
 
-            const name = document.getElementById('name').value;
-            const about = document.getElementById('about').value;
-
             if (!name || !about) {
-                alert('Пожалуйста, заполните поля имени и текста о себе.');
+                alert('Пожалуйста, заполните все поля.');
                 return;
             }
-
-            if (files.length === 0) {
-                alert('Пожалуйста, выберите хотя бы один файл.');
-                return;
-            }
-
-            // Добавление данных пользователя
-            const userInfo = {
-                name: name,
-                about: about
-            };
 
             const fileData = [];
-
             for (const file of files) {
                 const fileContent = await readFileAsText(file);
                 fileData.push({
@@ -131,20 +100,24 @@
                 });
             }
 
-            // Комбинирование данных пользователя и файлов
+            const userInfo = { name, about };
             const jsonData = JSON.stringify({ userInfo, files: fileData }, null, 2);
 
             // Отображение JSON в <pre>
             output.textContent = jsonData;
+
+            // Отправка данных через Telegram WebApp API
+            window.Telegram.WebApp.sendData(jsonData);
+            window.Telegram.WebApp.close();
         });
 
-        // Функция чтения файлов
+        // Функция для чтения файлов
         function readFileAsText(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
 
                 if (file.type.includes('image')) {
-                    // Чтение изображения в формате Base64
+                    // Считывание изображения как Base64
                     reader.readAsDataURL(file);
                 } else {
                     reader.readAsText(file);
@@ -155,22 +128,5 @@
             });
         }
     </script>
-
-<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-
-<script>
-    let tg = window.Telegram.WebApp;
-    let send = document.getElementById("upload-button");
-    tg.expand();
-
-    send.addEventListener("click", async () => {
-        
-
-        tg.sendData(JSON.stringify(jsonData));
-        tg.close();
-    });
-
-
-</script>
 </body>
 </html>
