@@ -1,105 +1,72 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация</title>
+    <title>File Upload to JSON</title>
 </head>
 <body>
-<style>        body {
-            font-family: Arial, sans-serif;
-            background-color: #e9f5ff;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: #0088cc;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        textarea,
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #0088cc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0077b3;
-        } </style>
-
-<div class="container">
-    <h1>Регистрация</h1>
-    <form enctype="multipart/form-data">
-        <label for="fullname">ФИО:</label>
-        <input type="text" id="fullname" name="fullname" required>
-
-        <label for="desc">Напишите о себе:</label>
-        <input type="text" id="desc" name="desc" required>
-
-        <label for="file">Загрузить файл:</label>
-        <input type="file" id="file" name="file">
-
-        <button id="btn" type="button">Оформить</button>
-
+    <h1>Upload Files to Save as JSON</h1>
+    <form id="file-form">
+        <label for="files">Choose files (images, text, or Excel):</label>
+        <input type="file" id="files" name="files" multiple accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
+        <button type="button" id="upload-button">Upload and Save</button>
     </form>
-</div>
 
-<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <pre id="output"></pre>
 
-<script>
-    let tg = window.Telegram.WebApp;
-    let send = document.getElementById("btn");
-    tg.expand();
+    <script>
+        document.getElementById('upload-button').addEventListener('click', async () => {
+            const fileInput = document.getElementById('files');
+            const output = document.getElementById('output');
+            const files = fileInput.files;
 
-    send.addEventListener("click", async () => {
-        let fio = document.getElementById("fullname").value;
-        let desc = document.getElementById("desc").value;
+            if (files.length === 0) {
+                alert('Please select at least one file.');
+                return;
+            }
 
-        let data = {
-            fio: fio,
-            desc: desc
-        };
+            const fileData = [];
 
-        tg.sendData(JSON.stringify(data));
-        tg.close();
-    });
+            for (const file of files) {
+                const fileContent = await readFileAsText(file);
+                fileData.push({
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    content: fileContent
+                });
+            }
 
+            const jsonData = JSON.stringify(fileData, null, 2);
 
-</script>
+            // Display JSON data in the <pre> element
+            output.textContent = jsonData;
 
+            // Optionally, download the JSON file
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'files.json';
+            link.click();
+        });
+
+        // Function to read file as text
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                if (file.type.includes('image')) {
+                    // Read image as a Base64 string
+                    reader.readAsDataURL(file);
+                } else {
+                    reader.readAsText(file);
+                }
+
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        }
+    </script>
 </body>
 </html>
