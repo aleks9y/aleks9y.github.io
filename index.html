@@ -3,119 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save Data Locally</title>
+    <title>User Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #eaeaea;
-        }
-        h1 {
-            color: #0088cc; /* Telegram blue */
+            margin: 20px;
         }
         form {
-            background: #ffffff;
-            border: 1px solid #dcdcdc;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333;
-            font-weight: bold;
-        }
-        input, textarea {
-            width: 100%;
+        input, textarea, button {
             padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #dcdcdc;
-            border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px;
         }
         button {
-            background-color: #0088cc;
-            color: #ffffff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            font-size: 14px;
             cursor: pointer;
-        }
-        button:hover {
-            background-color: #006699;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <h1>Telegram Data Form</h1>
-    <form id="data-form">
-        <label for="fio">Full Name (ФИО):</label>
-        <input type="text" id="fio" placeholder="Enter your full name" required>
+    <h1>Submit Your Data</h1>
+    <form id="userForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
 
-        <label for="desc">About Yourself:</label>
-        <textarea id="desc" rows="4" placeholder="Write a short description about yourself" required></textarea>
+        <label for="about">About Me:</label>
+        <textarea id="about" name="about" rows="4" required></textarea>
 
-        <label for="file">Upload a File (photo, .txt, Excel):</label>
-        <input type="file" id="file" accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
+        <label for="files">Upload Files:</label>
+        <input type="file" id="files" name="files" multiple>
 
-        <button type="button" id="save-button">Save Data</button>
+        <button type="submit">Submit</button>
     </form>
 
     <script>
-    document.getElementById('save-button').addEventListener('click', async () => {
-        const fio = document.getElementById('fio').value;
-        const desc = document.getElementById('desc').value;
-        const fileInput = document.getElementById('file');
+        const form = document.getElementById('userForm');
 
-        if (!fio || !desc) {
-            alert('Please fill out all fields.');
-            return;
-        }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const file = fileInput.files[0];
-        let fileContent = null;
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                about: formData.get('about'),
+                files: []
+            };
 
-        if (file) {
-            fileContent = await readFileAsBase64(file);
-        }
+            // Process files
+            const files = formData.getAll('files');
+            for (const file of files) {
+                const base64 = await toBase64(file);
+                data.files.push({
+                    name: file.name,
+                    content: base64
+                });
+            }
 
-        const data = {
-            fio: fio,
-            desc: desc,
-            file: file ? {
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                content: fileContent
-            } : null
-        };
-
-        // Отправка данных через Telegram Web App
-        tg.sendData(JSON.stringify(data));
-
-        alert('Данные отправлены в Telegram.');
-    });
-
-    // Helper function to read a file as Base64
-    function readFileAsBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
+            // Send data to Telegram WebApp
+            Telegram.WebApp.close();
+            Telegram.WebApp.sendData(JSON.stringify(data));
         });
-    }
-</script>
 
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Initialize Telegram WebApp
+        Telegram.WebApp.expand();
+    </script>
 </body>
 </html>
