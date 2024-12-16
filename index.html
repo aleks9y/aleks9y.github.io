@@ -1,16 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload to JSON</title>
+    <title>Загрузка файлов в JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf6fb;
+            color: #084c61;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #05668d;
+            margin-top: 20px;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            color: #05668d;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #b9d8e6;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #05668d;
+            outline: none;
+        }
+
+        button {
+            background-color: #05668d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #084c61;
+        }
+
+        pre {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #f0faff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload Files to Save as JSON</h1>
+    <h1>Загрузка файлов и данных в JSON</h1>
     <form id="file-form">
-        <label for="files">Choose files (images, text, or Excel):</label>
+        <label for="name">Ваше имя:</label>
+        <input type="text" id="name" name="name" placeholder="Введите ваше имя">
+
+        <label for="about">О себе:</label>
+        <textarea id="about" name="about" placeholder="Расскажите немного о себе"></textarea>
+
+        <label for="files">Выберите файлы (изображения, текстовые файлы или Excel):</label>
         <input type="file" id="files" name="files" multiple accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
-        <button type="button" id="upload-button">Upload and Save</button>
+
+        <button type="button" id="upload-button">Загрузить и сохранить</button>
     </form>
 
     <pre id="output"></pre>
@@ -21,10 +100,24 @@
             const output = document.getElementById('output');
             const files = fileInput.files;
 
-            if (files.length === 0) {
-                alert('Please select at least one file.');
+            const name = document.getElementById('name').value;
+            const about = document.getElementById('about').value;
+
+            if (!name || !about) {
+                alert('Пожалуйста, заполните поля имени и текста о себе.');
                 return;
             }
+
+            if (files.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один файл.');
+                return;
+            }
+
+            // Добавление данных пользователя
+            const userInfo = {
+                name: name,
+                about: about
+            };
 
             const fileData = [];
 
@@ -38,32 +131,20 @@
                 });
             }
 
-            const jsonData = JSON.stringify(fileData, null, 2);
+            // Комбинирование данных пользователя и файлов
+            const jsonData = JSON.stringify({ userInfo, files: fileData }, null, 2);
 
-            // Display JSON data in the <pre> element
+            // Отображение JSON в <pre>
             output.textContent = jsonData;
-
-            // Optionally, download the JSON file
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'files.json';
-            link.click();
-
-            // Send data using tg.sendData and close the session
-            if (typeof tg !== 'undefined' && tg.sendData && tg.close) {
-                tg.sendData(JSON.stringify(jsonData));  // Sending the data
-                tg.close();  // Close the session
-            }
         });
 
-        // Function to read file as text
+        // Функция чтения файлов
         function readFileAsText(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
 
                 if (file.type.includes('image')) {
-                    // Read image as a Base64 string
+                    // Чтение изображения в формате Base64
                     reader.readAsDataURL(file);
                 } else {
                     reader.readAsText(file);
@@ -74,5 +155,22 @@
             });
         }
     </script>
+
+<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    let send = document.getElementById("upload-button");
+    tg.expand();
+
+    send.addEventListener("click", async () => {
+        
+
+        tg.sendData(JSON.stringify(jsonData));
+        tg.close();
+    });
+
+
+</script>
 </body>
 </html>
