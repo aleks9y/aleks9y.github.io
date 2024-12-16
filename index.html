@@ -65,7 +65,7 @@
         <label for="about">О себе:</label>
         <textarea id="about" name="about" placeholder="Напишите немного о себе" rows="4" required></textarea>
 
-        <label for="files">Выберите файлы (изображения, текст, или Excel):</label>
+        <label for="files">Выберите файлы (изображения, текст, or Excel):</label>
         <input type="file" id="files" name="files" multiple accept=".txt,.xlsx,.xls,.jpg,.jpeg,.png,.gif">
 
         <button type="button" id="upload-button">Отправить</button>
@@ -91,7 +91,7 @@
 
             const fileData = [];
             for (const file of files) {
-                const fileContent = await readFileAsText(file);
+                const fileContent = await readFileAsBase64(file);
                 fileData.push({
                     name: file.name,
                     type: file.type,
@@ -111,18 +111,11 @@
             window.Telegram.WebApp.close();
         });
 
-        // Функция для чтения файлов
-        function readFileAsText(file) {
+        // Функция для чтения файлов как Base64
+        function readFileAsBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-
-                if (file.type.includes('image')) {
-                    // Считывание изображения как Base64
-                    reader.readAsDataURL(file);
-                } else {
-                    reader.readAsText(file);
-                }
-
+                reader.readAsDataURL(file);
                 reader.onload = () => resolve(reader.result);
                 reader.onerror = (error) => reject(error);
             });
