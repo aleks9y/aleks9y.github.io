@@ -1,0 +1,23 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" type="text/css" href="/static/style.css">
+            <title>Успех</title>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Данные успешно отправлены!</h1>
+                <p><strong>Имя:</strong> {{ name }}</p>
+                <p><strong>О себе:</strong> {{ about }}</p>
+                <p><strong>Загруженные файлы:</strong></p>
+                <ul>
+                    {% for file in files %}
+                        <li>{{ file }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="/">Вернуться на главную</a>
+            </div>
+        </body>
+        </html>
+    
